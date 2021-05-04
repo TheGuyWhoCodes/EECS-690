@@ -35,7 +35,7 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
 discount = 1
-
+p = 0.25
 
 print("============================================")
 print("================= PART 1 Policy Iteration =====================")
@@ -65,23 +65,51 @@ while not np.array_equal(gridworld_policy, gridworld_policy_prev):
 		for j in range(0,5):
 			if i == 0:
 				if j != 0 and j != 4:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i+1][j]*0.25 + gridworld_policy_prev[i][j+1]*0.25 + gridworld_policy_prev[i][j-1]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + p * gridworld_policy_prev[i][j] 
+                                                                + p * gridworld_policy_prev[i+1][j] 
+                                                                + p * gridworld_policy_prev[i][j+1] 
+                                                                + p * gridworld_policy_prev[i][j-1]
 				elif j == 4:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i+1][j]*0.25 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i][j-1]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + p * gridworld_policy_prev[i][j]
+                                                                + p * gridworld_policy_prev[i+1][j] 
+                                                                + p * gridworld_policy_prev[i][j] 
+                                                                + p * gridworld_policy_prev[i][j-1]
 			elif i == 4:
 				if j != 0 and j != 4:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i-1][j]*0.25 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i][j+1]*0.25 + gridworld_policy_prev[i][j-1]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + p * gridworld_policy_prev[i-1][j] 
+                                                                + p * gridworld_policy_prev[i][j] 
+                                                                + p * gridworld_policy_prev[i][j+1] 
+                                                                + p * gridworld_policy_prev[i][j-1]
 				elif j == 0:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i-1][j]*0.25 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i][j+1]*0.25 + gridworld_policy_prev[i][j]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + p * gridworld_policy_prev[i-1][j] 
+                                                                + p * gridworld_policy_prev[i][j] 
+                                                                + p * gridworld_policy_prev[i][j+1] 
+                                                                + p * gridworld_policy_prev[i][j]
 			else:
 				if j != 0 and j != 4:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i-1][j]*0.25 + gridworld_policy_prev[i+1][j]*0.25 + gridworld_policy_prev[i][j+1]*0.25 + gridworld_policy_prev[i][j-1]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + p * gridworld_policy_prev[i-1][j] 
+                                                                + p * gridworld_policy_prev[i+1][j] 
+                                                                + p * gridworld_policy_prev[i][j+1]
+                                                                + p * gridworld_policy_prev[i][j-1]
 				elif j == 4:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i-1][j]*0.25 + gridworld_policy_prev[i+1][j]*0.25 + gridworld_policy_prev[i][j]*0.25 + gridworld_policy_prev[i][j-1]*0.25
+					gridworld_policy[i][j] =  -1 
+                                                                + gridworld_policy_prev[i-1][j]*p 
+                                                                + gridworld_policy_prev[i+1][j]*p 
+                                                                + gridworld_policy_prev[i][j]*p 
+                                                                + gridworld_policy_prev[i][j-1]*p
 				elif j == 0:
-					gridworld_policy[i][j] =  -1 + gridworld_policy_prev[i-1][j]*0.25 + gridworld_policy_prev[i+1][j]*0.25 + gridworld_policy_prev[i][j+1]*0.25 + gridworld_policy_prev[i][j]*0.25
-     
-
+					gridworld_policy[i][j] =  -1 
+                                                                + gridworld_policy_prev[i-1][j]*p
+                                                                + gridworld_policy_prev[i+1][j]*p
+                                                                + gridworld_policy_prev[i][j+1]*p 
+                                                                + gridworld_policy_prev[i][j]*p
+      
+  
 ## final iteration print out
 print("Final Iteration: " , str(iteration_policy))
 print(gridworld_policy)
@@ -131,23 +159,41 @@ while not np.array_equal(gridworld_value, gridworld_value_prev):
 				if j != 0 and j != 4:
 					curr_max = max(
 								-1 + discount * gridworld_value_prev[i-1][j],
-								-1 + 1*gridworld_value_prev[i][j],
-								-1 + 1*gridworld_value_prev[i][j+1],
-								-1 + 1*gridworld_value_prev[i][j-1])
+								-1 + discount * gridworld_value_prev[i][j],
+								-1 + discount * gridworld_value_prev[i][j+1],
+								-1 + discount * gridworld_value_prev[i][j-1])
 					gridworld_value[i][j] = curr_max  
 				elif j == 0:
-					curr_max = 
-					gridworld_value[i][j] =  max(-1 + discount * gridworld_value_prev[i-1][j],-1 + 1*gridworld_value_prev[i][j],-1 + 1*gridworld_value_prev[i][j+1],-1 + 1*gridworld_value_prev[i][j])
-			else:
+					curr_max =  max(
+                                                                    -1 + discount * gridworld_value_prev[i-1][j],
+                                                                    -1 + discount * gridworld_value_prev[i][j],
+                                                                    -1 + discount * gridworld_value_prev[i][j+1],
+                                                                    -1 + discount * gridworld_value_prev[i][j])
+					gridworld_value[i][j] =  curr_max
+			
+                        else:
 				if j != 0 and j != 4:
-					curr_max = 
-					gridworld_value[i][j] =  max(-1 + discount * gridworld_value_prev[i-1][j],-1 + 1*gridworld_value_prev[i+1][j],-1 + 1*gridworld_value_prev[i][j+1],-1 + 1*gridworld_value_prev[i][j-1])
-				elif j == 4:
-					curr_max = 
-					gridworld_value[i][j] =  max(-1 + discount * gridworld_value_prev[i-1][j],-1 + 1*gridworld_value_prev[i+1][j],-1 + 1*gridworld_value_prev[i][j],-1 + 1*gridworld_value_prev[i][j-1])
-				elif j == 0:
-					curr_max = 
-					gridworld_value[i][j] =  max(-1 + discount * gridworld_value_prev[i-1][j],-1 + 1*gridworld_value_prev[i+1][j],-1 + 1*gridworld_value_prev[i][j+1],-1 + 1*gridworld_value_prev[i][j])
+					curr_max = max(
+                                                    -1 + discount * gridworld_value_prev[i-1][j],
+                                                    -1 + discount * gridworld_value_prev[i+1][j],
+                                                    -1 + discount * gridworld_value_prev[i][j+1],
+                                                    -1 + discount * gridworld_value_prev[i][j-1])
+
+					gridworld_value[i][j] =  curr_max
+                                elif j == 4:
+					curr_max = max(
+                                                        -1 + discount * gridworld_value_prev[i-1][j],
+                                                        -1 + discount * gridworld_value_prev[i+1][j],
+                                                        -1 + discount * gridworld_value_prev[i][j],
+                                                        -1 + discount * gridworld_value_prev[i][j-1])
+
+					gridworld_value[i][j] =  curr_max
+                                elif j == 0:
+					curr_max = max(
+                                                -1 + discount * gridworld_value_prev[i-1][j],
+                                                -1 + discount * gridworld_value_prev[i+1][j],
+                                                -1 + discount * gridworld_value_prev[i][j+1],
+                                                -1 + discount * gridworld_value_prev[i][j])
      
 
 ## final iteration print out
